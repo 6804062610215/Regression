@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Least-Squares Regression</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Numerical Methods · Curve Fitting</p>
+      <h1>Least-Squares Regression</h1>
+      <p class="lead">หาสมการที่ “ใกล้” ข้อมูลมากที่สุด โดยทำให้ผลรวมกำลังสองของความคลาดเคลื่อน
+        <span class="math">E = Σ [y<sub>i</sub> − g(x<sub>i</sub>)]²</span> มีค่าน้อยที่สุด</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="linear" role="tab">Linear</button>
+      <button class="tab" data-tab="polynomial" role="tab">Polynomial</button>
+      <button class="tab" data-tab="multiple" role="tab">Multiple Linear</button>
+    </nav>
+
+    <!-- ================= LINEAR ================= -->
+    <section class="panel active" id="panel-linear">
+      <div class="theory">
+        <h2>Linear Regression</h2>
+        <p>ลากเส้นตรง <span class="math">g(x) = a<sub>0</sub> + a<sub>1</sub>x</span> ผ่านข้อมูล n จุด
+          โดยตั้ง ∂E/∂a<sub>0</sub> = 0 และ ∂E/∂a<sub>1</sub> = 0 แล้วแก้ด้วยกฎของคราเมอร์</p>
+        <div class="formula">
+          <div><span>a<sub>1</sub> =</span> <span class="frac"><span>nΣx<sub>i</sub>y<sub>i</sub> − Σx<sub>i</sub>Σy<sub>i</sub></span><span>nΣx<sub>i</sub>² − (Σx<sub>i</sub>)²</span></span></div>
+          <div><span>a<sub>0</sub> =</span> <span class="frac"><span>Σy<sub>i</sub>Σx<sub>i</sub>² − Σx<sub>i</sub>y<sub>i</sub>Σx<sub>i</sub></span><span>nΣx<sub>i</sub>² − (Σx<sub>i</sub>)²</span></span></div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <label for="linear-data">ข้อมูล (หนึ่งบรรทัดต่อหนึ่งจุด: <code>x, y</code>)</label>
+          <textarea id="linear-data" rows="8" spellcheck="false"></textarea>
+          <div class="actions">
+            <button class="btn primary" data-run="linear">คำนวณ</button>
+            <button class="btn" data-sample="linear">ตัวอย่าง: ความเร็วลม</button>
+            <button class="btn ghost" data-clear="linear">ล้าง</button>
+          </div>
+          <p class="hint">ตัวอย่างจากเอกสาร: ความเร็วลม (m/s) ที่ความสูงอาคารต่าง ๆ (m)</p>
+        </div>
+        <div class="card chart-card"><canvas id="linear-chart" aria-label="กราฟข้อมูลและเส้นถดถอย"></canvas></div>
+      </div>
+      <div class="result" id="linear-result"></div>
+    </section>
+
+    <!-- ================= POLYNOMIAL ================= -->
+    <section class="panel" id="panel-polynomial">
+      <div class="theory">
+        <h2>Polynomial Regression</h2>
+        <p>ประมาณข้อมูลด้วยพหุนามอันดับ m:
+          <span class="math">g(x) = a<sub>0</sub> + a<sub>1</sub>x + a<sub>2</sub>x² + … + a<sub>m</sub>x<sup>m</sup></span>
+          ได้ระบบสมการ m+1 สมการ ซึ่งสมาชิกแถว r คอลัมน์ c ของเมทริกซ์คือ Σx<sub>i</sub><sup>r+c</sup>
+          และด้านขวาคือ Σx<sub>i</sub><sup>r</sup>y<sub>i</sub></p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <label for="polynomial-data">ข้อมูล (หนึ่งบรรทัดต่อหนึ่งจุด: <code>x, y</code>)</label>
+          <textarea id="polynomial-data" rows="8" spellcheck="false"></textarea>
+          <label for="polynomial-order" class="inline">อันดับพหุนาม m
+            <select id="polynomial-order">
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+          <div class="actions">
+            <button class="btn primary" data-run="polynomial">คำนวณ</button>
+            <button class="btn" data-sample="polynomial">ใช้ข้อมูลตัวอย่าง</button>
+            <button class="btn ghost" data-clear="polynomial">ล้าง</button>
+          </div>
+        </div>
+        <div class="card chart-card"><canvas id="polynomial-chart" aria-label="กราฟข้อมูลและพหุนามถดถอย"></canvas></div>
+      </div>
+      <div class="result" id="polynomial-result"></div>
+    </section>
+
+    <!-- ================= MULTIPLE ================= -->
+    <section class="panel" id="panel-multiple">
+      <div class="theory">
+        <h2>Multiple Linear Regression</h2>
+        <p>เมื่อ y ขึ้นกับหลายตัวแปร <span class="math">y = y(x<sub>1</sub>, x<sub>2</sub>, …, x<sub>k</sub>)</span>
+          สมมติฟังก์ชัน <span class="math">g = a<sub>0</sub> + a<sub>1</sub>x<sub>1</sub> + … + a<sub>k</sub>x<sub>k</sub></span>
+          แล้วหาค่าต่ำสุดของ E ได้ระบบสมการ k+1 สมการ</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <label for="multiple-data">ข้อมูล (หนึ่งบรรทัดต่อหนึ่งจุด: <code>x1, x2, …, y</code> — คอลัมน์สุดท้ายคือ y)</label>
+          <textarea id="multiple-data" rows="8" spellcheck="false"></textarea>
+          <div class="actions">
+            <button class="btn primary" data-run="multiple">คำนวณ</button>
+            <button class="btn" data-sample="multiple">ตัวอย่างจากเอกสาร</button>
+            <button class="btn ghost" data-clear="multiple">ล้าง</button>
+          </div>
+          <p class="hint">กราฟแสดงค่าจริง y เทียบกับค่าที่ประมาณได้ g — ถ้าพอดีจุดจะอยู่บนเส้นทแยง</p>
+        </div>
+        <div class="card chart-card"><canvas id="multiple-chart" aria-label="กราฟค่าจริงเทียบค่าประมาณ"></canvas></div>
+      </div>
+      <div class="result" id="multiple-result"></div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    Least-Squares Regression · 040613204 Object-Oriented Programming
+  </footer>
+
+  <script src="js/regression.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
